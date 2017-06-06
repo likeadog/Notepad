@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.zhuang.notepad.view.ImageTextView
+            android:id="@+id/navigation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="20dp"
+            android:onClick="backToLogin"
+            app:icon="@drawable/ic_back"
+            app:iconSize="25dp"
+            app:iconTextGap="2dp"
+            app:text="返回"
+            app:textColor="#707070"
+            app:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/navigation"
+            android:layout_marginTop="30dp"
+            android:gravity="center_horizontal"
+            android:text="注册"
+            android:textColor="@android:color/black"
+            android:textSize="28sp" />
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/userNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="30dp"
+            android:hint="用户名"
+            android:padding="10dp"
+            android:textSize="18sp" />
+
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/passwordTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/userNameTextView"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="5dp"
+            android:hint="密码"
+            android:inputType="textPassword"
+            android:padding="10dp"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/register"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/passwordTextView"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/btn_login"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="registered"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="注册"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+        <LinearLayout
+            android:id="@+id/progressBar"
+            android:visibility="gone"
+            android:gravity="center"
+            android:layout_marginTop="25dp"
+            android:layout_below="@+id/passwordTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ProgressBar
+                style="?attr/progressBarStyle"
+                android:layout_width="25dp"
+                android:layout_height="25dp" />
+            <TextView
+                android:layout_marginLeft="3dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="正在注册..."/>
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

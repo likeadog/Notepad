@@ -1,0 +1,9 @@
+<resources>
+    <declare-styleable name="ZRecyclerView">
+        <attr name="hasDiver" format="boolean" />
+        <attr name="diverType">
+            <enum name="line" value="0" />
+            <enum name="interval" value="1" />
+        </attr>
+    </declare-styleable>
+</resources>
