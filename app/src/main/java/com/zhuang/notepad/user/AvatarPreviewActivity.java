@@ -29,8 +29,7 @@ import retrofit2.Response;
 public class AvatarPreviewActivity extends BaseActivity {
 
     private SimpleDraweeView imageView;
-    private String path;//图片path
-    private String uri;
+    private String mCurrentPhotoPath;//图片path
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,24 +41,18 @@ public class AvatarPreviewActivity extends BaseActivity {
 
     private void init() {
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        path = getIntent().getStringExtra("path");
-        uri = getIntent().getStringExtra("uri");
+        mCurrentPhotoPath = getIntent().getStringExtra("mCurrentPhotoPath");
+        File file = new File(mCurrentPhotoPath);
         imageView = (SimpleDraweeView) findViewById(R.id.imageView);
-        if (uri != null) {
-            imageView.setImageURI(uri);
-        } else {
-            imageView.setImageURI(Uri.fromFile(new File(path)));
-        }
+        imageView.setImageURI(Uri.fromFile(file));
     }
 
     public void submitPhoto(View view) {
+        final String compressFilePath = PictureUtil.compressBitmap(getApplicationContext(), mCurrentPhotoPath);
+        File file = new File(compressFilePath);
+
         MultipartBody.Builder builder = new MultipartBody.Builder();
         builder.setType(MultipartBody.FORM);
-        if (uri != null) {
-            path = PictureUtil.getRealPathFromURI(getApplicationContext(), Uri.parse(uri));
-        }
-        final String compressFilePath = PictureUtil.compressBitmap(getApplicationContext(), path);
-        File file = new File(compressFilePath);
         builder.addFormDataPart("fileUp", "android.jpg", RequestBody.create(MediaType.parse("image/jpeg"), file));
         MultipartBody requestBody = builder.build();
 
@@ -85,6 +78,11 @@ public class AvatarPreviewActivity extends BaseActivity {
             }
         });
         //结束该activity，返回
+        setResult(RESULT_OK);
+        finish();
+    }
+
+    public void cancel(View view){
         finish();
     }
 }

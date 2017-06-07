@@ -10,8 +10,10 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.provider.Settings;
+import android.util.Base64;
+import android.util.Log;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,9 +23,6 @@ import java.util.Date;
 
 public class PictureUtil {
 
-    private static final String albumName = "notepad_image";
-    private static final String JPEG_FILE_SUFFIX = ".jpg";
-
     /**
      * 计算图片的缩放值
      *
@@ -32,29 +31,17 @@ public class PictureUtil {
      * @param reqHeight
      * @return
      */
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
+    public static int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
         final int height = options.outHeight;
         final int width = options.outWidth;
         int inSampleSize = 1;
-
         if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) > reqHeight
-                    && (halfWidth / inSampleSize) > reqWidth) {
-                inSampleSize *= 2;
-            }
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+            inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
         }
-
         return inSampleSize;
     }
-
 
     /**
      * 读取图片的旋转的角度
@@ -87,30 +74,6 @@ public class PictureUtil {
     }
 
     /**
-     * 根据路径获得图片并压缩返回bitmap
-     * 有些手机会自动旋转图片，这里控制不旋转
-     * @param filePath
-     * @return
-     */
-    public static Bitmap getBitmap(String filePath,int reqWidth, int reqHeight) {
-        int degree = getBitmapDegree(filePath);
-        // 根据旋转角度，生成旋转矩阵
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        final BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false;
-        Bitmap bm = BitmapFactory.decodeFile(filePath, options);
-        return Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
-    }
-
-    /**
      * 根据路径删除图片
      *
      * @param path
@@ -126,8 +89,7 @@ public class PictureUtil {
      * 添加到图库
      */
     public static void galleryAddPic(Context context, String path) {
-        Intent mediaScanIntent = new Intent(
-                Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
         File f = new File(path);
         Uri contentUri = Uri.fromFile(f);
         mediaScanIntent.setData(contentUri);
@@ -136,14 +98,12 @@ public class PictureUtil {
 
     /**
      * 获取保存图片的目录
-     *
      * @return
      */
     public static File getAlbumDir() {
         File dir = new File(
-                Environment
-                        .getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
-                albumName);
+                Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES),
+                getAlbumName());
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -167,22 +127,25 @@ public class PictureUtil {
         return path;
     }
 
-    /**
-     * 创建照片文件
-     * @return
-     * @throws IOException
-     */
     public static File createImageFile() throws IOException {
-        // Create an image file name
-        String imageFileName =  getImageName();
-        File albumF = getAlbumDir();
-        File imageF = File.createTempFile(imageFileName, JPEG_FILE_SUFFIX, albumF);
-        return imageF;
+        File image = new File(getAlbumDir(), getImageName());
+        return image;
     }
 
     public static String getImageName(){
-        String name = "takePhoto" + System.currentTimeMillis();
-        return name;
+        SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
+        String timeStamp = format.format(new Date());
+        String imageFileName = "notepad" + timeStamp + ".jpg";
+        return imageFileName;
+    }
+
+    /**
+     * 获取保存图片文件夹名称
+     *
+     * @return
+     */
+    public static String getAlbumName() {
+        return "nptepad";
     }
 
     /**
@@ -190,11 +153,11 @@ public class PictureUtil {
      */
     public static String compressBitmap(Context context, String filePath){
         //压缩图片暂存在app缓存中
-        String compressFilePath = context.getCacheDir().getPath()+getImageName()+JPEG_FILE_SUFFIX;
+        String compressFilePath = context.getCacheDir().getPath()+getImageName();
         File file = new File(compressFilePath);
 
         //像素压缩
-        Bitmap bm =getBitmap(filePath, 480,800);
+        Bitmap bm =getBitmap(filePath, 800,320);
 
         //质量压缩
         FileOutputStream fOut = null;
@@ -209,5 +172,29 @@ public class PictureUtil {
             e.printStackTrace();
         }
         return compressFilePath;
+    }
+
+    /**
+     * 根据路径获得图片并压缩返回bitmap
+     * 有些手机会自动旋转图片，这里控制不旋转
+     * @param filePath
+     * @return
+     */
+    public static Bitmap getBitmap(String filePath,int reqWidth, int reqHeight) {
+        int degree = getBitmapDegree(filePath);
+        // 根据旋转角度，生成旋转矩阵
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        BitmapFactory.decodeFile(filePath, options);
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, reqWidth, reqHeight);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        Bitmap bm = BitmapFactory.decodeFile(filePath, options);
+        return Bitmap.createBitmap(bm, 0, 0, bm.getWidth(), bm.getHeight(), matrix, true);
     }
 }
