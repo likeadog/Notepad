@@ -12,7 +12,7 @@ public interface LoginService {
 
     //验证token合法性
     @GET("ser/heartbeat")
-    Call<BaseReturnMsg> validateToken(@Query("token") String token);
+    Call<BaseReturnMsg> validateToken();
 
     @GET("ser/login")
     Call<LoginReturnMsg> login(@Query("name") String name, @Query("password") String password);

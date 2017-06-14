@@ -17,6 +17,7 @@ import com.zhuang.notepad.network.LoginService;
 import com.zhuang.notepad.network.RetrofitHelper;
 import com.zhuang.notepad.notepad.NotepadListActivity;
 import com.zhuang.notepad.user.SingleUser;
+import com.zhuang.notepad.utils.SharedPreferencesUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -57,16 +58,14 @@ public class SplashActivity extends BaseActivity {
      */
     private void validateToken(){
         //取出token
-        SharedPreferences sp = getSharedPreferences("notepad", Context.MODE_PRIVATE);
-        final String token = sp.getString("token", null);
+        final String token = SharedPreferencesUtil.getToken(this);
         if(token == null){
             Log.e(TAG,"token为空");
             gotoLogin();
             return;
         }
-
-        LoginService service = RetrofitHelper.createService(LoginService.class);
-        Call<BaseReturnMsg> call = service.validateToken(token);
+        LoginService service = RetrofitHelper.createServiceWidthToken(LoginService.class);
+        Call<BaseReturnMsg> call = service.validateToken();
         call.enqueue(new Callback<BaseReturnMsg>() {
             @Override
             public void onResponse(Call<BaseReturnMsg> call, Response<BaseReturnMsg> response) {
@@ -76,7 +75,6 @@ public class SplashActivity extends BaseActivity {
                     gotoHome();
                 }else{
                     gotoLogin();
-                    Log.e(TAG,"token过期");
                 }
             }
 

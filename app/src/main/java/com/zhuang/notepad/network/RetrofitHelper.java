@@ -1,6 +1,5 @@
 package com.zhuang.notepad.network;
 
-import android.app.Application;
 import android.content.Context;
 import android.util.Log;
 
@@ -9,7 +8,6 @@ import com.zhuang.notepad.utils.SharedPreferencesUtil;
 
 import java.io.IOException;
 
-import okhttp3.HttpUrl;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -50,25 +48,34 @@ public class RetrofitHelper {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
                     Request request = chain.request();
-                    HttpUrl httpUrl = request.url().newBuilder()
+                   /* HttpUrl httpUrl = request.url().newBuilder()
                             .setQueryParameter("token", authToken)
                             .build();
-                    request = request.newBuilder().url(httpUrl).build();
+                    request = request.newBuilder().url(httpUrl).build();*/
+                    request = request
+                            .newBuilder()
+                            .header("token", authToken)
+                            .build();
                     Response response = chain.proceed(request);
                     String json = response.body().string();
                     BaseReturnMsg baseReturnMsg = gson.fromJson(json,BaseReturnMsg.class);
                     int code = baseReturnMsg.getCode();
-                    //token过期
+                    //token已过期(refresh未过期)
                     if(code == -23){
-                        Log.e("zhuang","token过期,刷新token");
                         getNewToken();
+                        Request newRequest = chain.request();
+                        newRequest = newRequest
+                                .newBuilder()
+                                .header("token", SharedPreferencesUtil.getToken(mContext))
+                                .build();
+                        return chain.proceed(newRequest);
                     }else{
                         //上面的response已经被关闭了，重新生成一个
                         response = response.newBuilder()
                                 .body(ResponseBody.create(null, json))
                                 .build();
+                        return response;
                     }
-                    return response;
                 }
             });
         }
@@ -88,7 +95,10 @@ public class RetrofitHelper {
         LoginService service = builder.build().create(LoginService.class);
         Call<TokenMsg> call = service.refreshToken(SharedPreferencesUtil.getRefreshToken(mContext));
         retrofit2.Response<TokenMsg> response = call.execute();
-        Log.e("zhuang",response.body().getToken());
+        String token = response.body().getToken();
+        String refreshToken = response.body().getRefreshtoken();
+        SharedPreferencesUtil.setToken(mContext,token);
+        SharedPreferencesUtil.setRefreshToken(mContext,refreshToken);
         return null;
     }
 }

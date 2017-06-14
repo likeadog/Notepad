@@ -95,6 +95,11 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
             @Override
             public void onResponse(Call<BaseReturnMsg> call, Response<BaseReturnMsg> response) {
                 Log.e(TAG,"退出登陆");
+                SharedPreferences sp = getSharedPreferences("notepad", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sp.edit();
+                editor.remove("token");
+                editor.remove("refreshtoken");
+                editor.commit();
             }
 
             @Override
@@ -102,13 +107,6 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
                 Log.e(TAG, t.toString());
             }
         });
-
-        SharedPreferences sp = getSharedPreferences("notepad", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.remove("token");
-        editor.remove("refreshtoken");
-        editor.commit();
-
         //跳转到登陆页
         Intent intent = new Intent(this, LoginActivity.class);
         startActivity(intent);

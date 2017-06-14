@@ -23,6 +23,7 @@ import com.zhuang.notepad.network.LoginService;
 import com.zhuang.notepad.network.RetrofitHelper;
 import com.zhuang.notepad.notepad.NotepadListActivity;
 import com.zhuang.notepad.user.SingleUser;
+import com.zhuang.notepad.utils.SharedPreferencesUtil;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -117,14 +118,7 @@ public class LoginActivity extends BaseActivity {
         String avatar  = loginReturnMsg.getAvatar();
         String name = binding.userNameTextView.getText().toString();
         String password = binding.passwordTextView.getText().toString();
-        SharedPreferences sp = getSharedPreferences("notepad", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = sp.edit();
-        editor.putString("name",name);
-        editor.putString("password", password);
-        editor.putString("token", token);
-        editor.putString("refreshtoken", refreshtoken);
-        editor.putString("avatar", avatar);
-        editor.commit();
+        SharedPreferencesUtil.setAllData(this, name, password, avatar, token, refreshtoken);
         User user = SingleUser.getInstance();
         user.setName(name);
         user.setPassword(password);
