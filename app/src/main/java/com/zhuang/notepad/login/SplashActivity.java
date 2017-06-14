@@ -72,7 +72,6 @@ public class SplashActivity extends BaseActivity {
             public void onResponse(Call<BaseReturnMsg> call, Response<BaseReturnMsg> response) {
                 BaseReturnMsg baseReturnMsg = response.body();
                 if(baseReturnMsg.getCode() == 0){
-                    RetrofitHelper.token = token;
                     setUserData();
                     gotoHome();
                 }else{
@@ -101,6 +100,5 @@ public class SplashActivity extends BaseActivity {
         user.setName(name);
         user.setPassword(password);
         user.setAvatar(avatar);
-        Log.e(TAG,avatar+"");
     }
 }

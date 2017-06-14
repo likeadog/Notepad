@@ -41,7 +41,6 @@ public class AddNoteActivity extends BaseActivity {
      * @param view
      */
     public void addNote(View view) {
-
         final LoadingDialog loadingDialog = new LoadingDialog();
         loadingDialog.show(getSupportFragmentManager(),"loading");
 

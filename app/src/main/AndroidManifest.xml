@@ -13,10 +13,8 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity
-            android:name=".login.SplashActivity"
-            android:theme="@style/AppTheme.NoActionBar">
+        android:theme="@style/AppTheme.NoActionBar">
+        <activity android:name=".login.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,24 +24,15 @@
         <activity
             android:name=".login.LoginActivity"
             android:theme="@style/LoginTheme" />
-        <activity
-            android:name=".login.RegisteredActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".login.RegisteredActivity" />
         <activity
             android:name=".notepad.NotepadListActivity"
-            android:label="@string/title_activity_notepad_list"
-            android:theme="@style/AppTheme.NoActionBar" />
-        <activity
-            android:name=".notepad.AddNoteActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:label="@string/title_activity_notepad_list" />
+        <activity android:name=".notepad.AddNoteActivity" />
         <activity android:name=".user.UserActivity" />
-        <activity
-            android:name=".user.AvatarPreviewActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".user.AvatarPreviewActivity" />
         <activity android:name=".user.UpdatePasswordActivity" />
-        <activity
-            android:name=".notepad.NotepadDetailActivity"
-            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".notepad.NotepadDetailActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -52,9 +41,10 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
 
+        <activity android:name=".user.GalleryActivity"></activity>
     </application>
 
 </manifest>

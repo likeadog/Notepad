@@ -16,6 +16,7 @@ import com.zhuang.notepad.view.ZRecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -25,7 +26,7 @@ import retrofit2.Response;
  * Created by zhuang on 2017/5/23.
  */
 
-public class NotepadListViewModel extends BaseObservable{
+public class NotepadListViewModel extends BaseObservable {
     public NoteListAdapter adapter;
     private List<Note> noteList = new ArrayList<>();
     private String TAG = getClass().getSimpleName();
@@ -49,8 +50,18 @@ public class NotepadListViewModel extends BaseObservable{
             public void onResponse(Call<ReturnDataList<Note>> call, Response<ReturnDataList<Note>> response) {
                 ReturnDataList<Note> list = response.body();
                 //成功
-                if(list.getCode() == 0){
-                    noteList.addAll(list.getData());
+                if (list.getCode() == 0) {
+                    List<Note> noteList1 = list.getData();
+
+                    String[] colors = {"16a085","27ae60","2980b9","8e44ad","2c3e50",
+                            "f39c12","d35400","c0392b"};
+                    Random rand =new Random(48);
+                    for (int i = 0; i < noteList1.size(); i++) {
+                        Note note = noteList1.get(i);
+                        note.setColor(colors[rand.nextInt(7)]);
+                    }
+
+                    noteList.addAll(noteList1);
                     adapter.notifyDataSetChanged();
                     setRefreshing(false);
                 }
@@ -58,7 +69,7 @@ public class NotepadListViewModel extends BaseObservable{
 
             @Override
             public void onFailure(Call<ReturnDataList<Note>> call, Throwable t) {
-                Log.e(TAG,t.toString());
+                Log.e(TAG, t.toString());
                 setRefreshing(false);
             }
         });
@@ -80,8 +91,8 @@ public class NotepadListViewModel extends BaseObservable{
         public void onItemClick(int position) {
             Note note = noteList.get(position);
             Intent intent = new Intent(context, NotepadDetailActivity.class);
-            intent.putExtra("note",note.getNote());
-            intent.putExtra("time",note.getTime());
+            intent.putExtra("note", note.getNote());
+            intent.putExtra("time", note.getTime());
             context.startActivity(intent);
         }
     };
@@ -96,7 +107,7 @@ public class NotepadListViewModel extends BaseObservable{
         notifyPropertyChanged(BR.refreshing);
     }
 
-    public void refresh(){
+    public void refresh() {
         setRefreshing(true);
         noteList.clear();
         getNoteList();

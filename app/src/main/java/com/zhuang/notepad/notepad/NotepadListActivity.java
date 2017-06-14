@@ -7,9 +7,6 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,8 +16,16 @@ import com.zhuang.notepad.R;
 import com.zhuang.notepad.databinding.ActivityNoteListBinding;
 import com.zhuang.notepad.databinding.NavHeaderNoteListBinding;
 import com.zhuang.notepad.login.LoginActivity;
+import com.zhuang.notepad.network.BaseReturnMsg;
+import com.zhuang.notepad.network.LoginService;
+import com.zhuang.notepad.network.RetrofitHelper;
+import com.zhuang.notepad.user.GalleryActivity;
 import com.zhuang.notepad.user.UpdatePasswordActivity;
 import com.zhuang.notepad.user.UserActivity;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class NotepadListActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
@@ -32,18 +37,20 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_list);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+       /* ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, binding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         binding.drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
+        toggle.syncState();*/
 
         binding.navView.setNavigationItemSelectedListener(this);
         NavHeaderNoteListBinding.bind(binding.navView.getHeaderView(0));
         viewModel = new NotepadListViewModel(this);
         binding.setViewModel(viewModel);
+    }
+
+    public void drawClick(View view){
+        binding.drawerLayout.openDrawer(GravityCompat.START);
     }
 
     /**
@@ -69,8 +76,7 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
 
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        binding.drawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
 
@@ -83,6 +89,20 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
      * 退出登录
      */
     private void loginOut() {
+        LoginService service = RetrofitHelper.createServiceWidthToken(LoginService.class);
+        Call<BaseReturnMsg> call = service.logout();
+        call.enqueue(new Callback<BaseReturnMsg>() {
+            @Override
+            public void onResponse(Call<BaseReturnMsg> call, Response<BaseReturnMsg> response) {
+                Log.e(TAG,"退出登陆");
+            }
+
+            @Override
+            public void onFailure(Call<BaseReturnMsg> call, Throwable t) {
+                Log.e(TAG, t.toString());
+            }
+        });
+
         SharedPreferences sp = getSharedPreferences("notepad", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sp.edit();
         editor.remove("token");
@@ -100,11 +120,15 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
         startActivityForResult(intent, REQUEST_ADD_NOTE);
     }
 
+    public void gotoGallery(View view) {
+        Intent intent = new Intent(this, GalleryActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_ADD_NOTE) {
-                Log.e(TAG,"refresh");
                 viewModel.refresh();
             }
         }

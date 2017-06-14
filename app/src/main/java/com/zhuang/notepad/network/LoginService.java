@@ -19,4 +19,11 @@ public interface LoginService {
 
     @GET("ser/register")
     Call<BaseReturnMsg> register(@Query("name") String name, @Query("password") String password);
+
+    @GET("ser/logout")
+    Call<BaseReturnMsg> logout();
+
+    //刷新token
+    @GET("ser/refresh")
+    Call<TokenMsg> refreshToken(@Query("refreshtoken") String refreshtoken);
 }

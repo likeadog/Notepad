@@ -125,7 +125,6 @@ public class LoginActivity extends BaseActivity {
         editor.putString("refreshtoken", refreshtoken);
         editor.putString("avatar", avatar);
         editor.commit();
-        RetrofitHelper.token = token;
         User user = SingleUser.getInstance();
         user.setName(name);
         user.setPassword(password);
@@ -139,7 +138,6 @@ public class LoginActivity extends BaseActivity {
         SharedPreferences sp = getSharedPreferences("notepad", Context.MODE_PRIVATE);
         String name = sp.getString("name", null);
         String password = sp.getString("password", null);
-        String token = sp.getString("token", null);
         if (name != null) {
             binding.userNameTextView.setText(name);
         }

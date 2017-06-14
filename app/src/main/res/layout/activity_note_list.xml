@@ -17,56 +17,59 @@
         android:fitsSystemWindows="true"
         tools:openDrawer="start">
 
-        <android.support.design.widget.CoordinatorLayout
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:fitsSystemWindows="true">
+            android:layout_height="wrap_content"
+            android:background="@android:color/white">
 
-            <android.support.design.widget.AppBarLayout
-                android:id="@+id/app_bar"
+            <RelativeLayout
+                android:id="@+id/toolbar"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/app_bar_height"
-                android:fitsSystemWindows="true"
-                android:theme="@style/AppTheme.AppBarOverlay">
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:onClick="drawClick"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:paddingRight="10dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:src="@drawable/ic_menu" />
+                <TextView
+                    android:layout_centerInParent="true"
+                    android:textSize="28dp"
+                    android:padding="10dp"
+                    android:textColor="@android:color/black"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Notepad"/>
+                <ImageView
+                    android:layout_alignParentRight="true"
+                    android:onClick="gotoGallery"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:paddingRight="10dp"
+                    android:paddingTop="16dp"
+                    android:paddingBottom="16dp"
+                    android:src="@drawable/ic_gallary" />
+            </RelativeLayout>
 
-                <android.support.design.widget.CollapsingToolbarLayout
-                    android:id="@+id/toolbar_layout"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/header_main"
-                    android:fitsSystemWindows="true"
-                    app:contentScrim="?attr/colorPrimary"
-                    app:layout_scrollFlags="scroll|exitUntilCollapsed">
-
-                    <android.support.v7.widget.Toolbar
-                        android:id="@+id/toolbar"
-                        android:layout_width="match_parent"
-                        android:layout_height="?attr/actionBarSize"
-                        app:layout_collapseMode="pin"
-                        app:popupTheme="@style/AppTheme.PopupOverlay"
-                        app:title=" " />
-
-                </android.support.design.widget.CollapsingToolbarLayout>
-            </android.support.design.widget.AppBarLayout>
-
-            <android.support.v4.widget.SwipeRefreshLayout
-                xmlns:bind="http://schemas.android.com/apk/res-auto"
+            <android.support.v4.widget.SwipeRefreshLayout xmlns:bind="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/swipeRefreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                bind:refreshing = "@{viewModel.refreshing}"
-                bind:onRefreshListener = "@{viewModel.onRefreshListener}"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior">
+                android:layout_below="@+id/toolbar"
+                bind:onRefreshListener="@{viewModel.onRefreshListener}"
+                bind:refreshing="@{viewModel.refreshing}">
 
                 <com.zhuang.notepad.view.ZRecyclerView
+                    android:paddingTop="10dp"
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:clipToPadding="false"
-                    android:paddingTop="10dp"
                     bind:adapter="@{viewModel.adapter}"
-                    bind:diverType="interval"
-                    bind:hasDiver="true"
+                    bind:hasDiver="false"
                     bind:layoutManager="LinearLayoutManager"
                     bind:onItemClickListener="@{viewModel.itemClickListener}" />
             </android.support.v4.widget.SwipeRefreshLayout>
@@ -75,13 +78,12 @@
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="@dimen/fab_margin"
+                android:layout_margin="10dp"
                 android:onClick="gotoAddNote"
-                app:fabSize="mini"
-                app:layout_anchor="@id/app_bar"
-                app:layout_anchorGravity="bottom|end"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentRight="true"
                 app:srcCompat="@drawable/ic_edit" />
-        </android.support.design.widget.CoordinatorLayout>
+        </RelativeLayout>
 
         <android.support.design.widget.NavigationView
             android:id="@+id/nav_view"
