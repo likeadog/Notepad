@@ -36,6 +36,7 @@
                     android:paddingBottom="16dp"
                     android:src="@drawable/ic_menu" />
                 <TextView
+                    android:id="@+id/title"
                     android:layout_centerInParent="true"
                     android:textSize="28dp"
                     android:padding="10dp"

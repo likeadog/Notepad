@@ -44,7 +44,12 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".user.GalleryActivity"></activity>
+        <service
+            android:name=".update.TinkerResultService"
+            android:exported="false" />
+
+        <activity android:name=".user.GalleryActivity" />
+        <activity android:name=".user.PhotoCheckActivity"></activity>
     </application>
 
 </manifest>

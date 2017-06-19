@@ -99,4 +99,5 @@ public class SplashActivity extends BaseActivity {
         user.setPassword(password);
         user.setAvatar(avatar);
     }
+
 }

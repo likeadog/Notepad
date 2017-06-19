@@ -45,6 +45,7 @@ public class PictureUtil {
 
     /**
      * 读取图片的旋转的角度
+     *
      * @param path 图片绝对路径
      * @return 图片的旋转角度
      */
@@ -98,6 +99,7 @@ public class PictureUtil {
 
     /**
      * 获取保存图片的目录
+     *
      * @return
      */
     public static File getAlbumDir() {
@@ -115,12 +117,10 @@ public class PictureUtil {
      * @param contentUri
      * @return 获取图片在本机中的路径
      */
-    public static String getRealPathFromURI(Context context,Uri contentUri) {
-        String[] proj = { MediaStore.Images.Media.DATA };
-        Cursor cursor = context.getContentResolver().query(contentUri, proj, null,
-                null, null);
-        int column_index = cursor
-                .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+    public static String getRealPathFromURI(Context context, Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA};
+        Cursor cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         String path = cursor.getString(column_index);
         cursor.close();
@@ -132,7 +132,7 @@ public class PictureUtil {
         return image;
     }
 
-    public static String getImageName(){
+    public static String getImageName() {
         SimpleDateFormat format = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timeStamp = format.format(new Date());
         String imageFileName = "notepad" + timeStamp + ".jpg";
@@ -151,13 +151,13 @@ public class PictureUtil {
     /**
      * 压缩图片并保存
      */
-    public static String compressBitmap(Context context, String filePath){
+    public static String compressBitmap(Context context, String filePath) {
         //压缩图片暂存在app缓存中
-        String compressFilePath = context.getCacheDir().getPath()+getImageName();
+        String compressFilePath = context.getCacheDir().getPath() + getImageName();
         File file = new File(compressFilePath);
 
         //像素压缩
-        Bitmap bm =getBitmap(filePath, 800,320);
+        Bitmap bm = getBitmap(filePath, 800, 320);
 
         //质量压缩
         FileOutputStream fOut = null;
@@ -168,7 +168,7 @@ public class PictureUtil {
             fOut.close();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return compressFilePath;
@@ -177,10 +177,11 @@ public class PictureUtil {
     /**
      * 根据路径获得图片并压缩返回bitmap
      * 有些手机会自动旋转图片，这里控制不旋转
+     *
      * @param filePath
      * @return
      */
-    public static Bitmap getBitmap(String filePath,int reqWidth, int reqHeight) {
+    public static Bitmap getBitmap(String filePath, int reqWidth, int reqHeight) {
         int degree = getBitmapDegree(filePath);
         // 根据旋转角度，生成旋转矩阵
         Matrix matrix = new Matrix();
