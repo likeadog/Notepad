@@ -6,14 +6,19 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 
-import com.zhuang.notepad.notepad.NotepadListActivity;
+import com.zhuang.notepad.BuildConfig;
 import com.zhuang.notepad.utils.SharedPreferencesUtil;
+
+import java.io.File;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -34,7 +39,7 @@ public class UpdateManager {
     private Context context;
     private Context applicationContext;
     private DownloadManager downloadManager;
-    private String uri = "https://github.com/likeadog/Notepad/raw/master/app/update/notepad.apk";
+    private String uri = "https://github.com/likeadog/Notepad/raw/master/app/update/app-release.apk";
 
     public UpdateManager(Context context) {
         this.context = context;
@@ -67,16 +72,15 @@ public class UpdateManager {
      */
     void compareLoadVersion(float remoteVersion) {
         long downloadId = SharedPreferencesUtil.getDownloadId(applicationContext);
-        Uri uri = downloadManager.getUriForDownloadedFile(downloadId);
-        if (uri != null) {
-            PackageInfo loadInfo = getApkInfo(uri.getPath());
+        if (downloadId != -1) {
+            PackageInfo loadInfo = getApkInfo(downloadId);
             String localPackage = applicationContext.getPackageName();
             if (loadInfo.packageName.equals(localPackage)) {
                 float loadVersion = Float.parseFloat(loadInfo.versionName);
                 if (loadVersion == remoteVersion) {
                     //不需要下载，直接安装
                     Log.e("zhuang", "已下载过更新的apk,版本为"+loadVersion+"直接安装");
-                    showDialog(uri);
+                    showDialog(downloadId);
                 } else if (loadVersion < remoteVersion) {
                     //需要下载
                     Log.e("zhuang", "下载过的apk版本较老,已下载版本为"+loadVersion+"服务器版本为"+remoteVersion+"需要下载");
@@ -89,14 +93,14 @@ public class UpdateManager {
         }
     }
 
-    private void showDialog(final Uri apkPath){
+    private void showDialog(final long downloadId){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(" ").setMessage("app有更新，是否更新？")
                 .setNegativeButton("取消",null)
                 .setPositiveButton("更新", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        installApk(apkPath);
+                        installApk(downloadId);
                     }
                 });
         builder.create().show();
@@ -105,12 +109,23 @@ public class UpdateManager {
     /**
      * 安装APK
      */
-    public void installApk(Uri apkPath) {
+    public void installApk(long downloadId) {
+        Uri contentUri;
+        String path = getApkPath(downloadId);
+        File apkFile = new File(path);
         Intent intent = new Intent();
         intent.setAction(Intent.ACTION_VIEW);
         //此处因为上下文是Context，所以要加此Flag，不然会报错
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(apkPath, "application/vnd.android.package-archive");
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            contentUri = FileProvider.getUriForFile(context,
+                    BuildConfig.APPLICATION_ID + ".provider",
+                    apkFile);
+        }else{
+            contentUri = Uri.fromFile(apkFile);
+        }
+        intent.setDataAndType(contentUri, "application/vnd.android.package-archive");
         context.startActivity(intent);
     }
 
@@ -126,21 +141,40 @@ public class UpdateManager {
         //移动网络是否允许下载
         req.setAllowedOverRoaming(false);
         /**设置通知栏是否可见*/
-        //req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
+        req.setNotificationVisibility(DownloadManager.Request.VISIBILITY_HIDDEN);
         //file:///storage/emulated/0/Android/data/your-package/files/Download/update.apk
-        req.setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "notepad.apk");
+        req.setDestinationInExternalFilesDir(applicationContext, Environment.DIRECTORY_DOWNLOADS, "notepad.apk");
         long newDownloadId = downloadManager.enqueue(req);
         //把DownloadId保存到本地
-        SharedPreferencesUtil.setDownloadId(context, newDownloadId);
+        SharedPreferencesUtil.setDownloadId(applicationContext, newDownloadId);
     }
 
     /**
      * 获取已下载的apk程序信息
      */
-    private PackageInfo getApkInfo(String path) {
+    private PackageInfo getApkInfo(long downloadId) {
+        String path = getApkPath(downloadId);
         PackageManager pm = applicationContext.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
         return info;
+    }
+
+    String getApkPath(long downloadId){
+        DownloadManager.Query query = new DownloadManager.Query();
+        query.setFilterById(downloadId);
+        query.setFilterByStatus(DownloadManager.STATUS_SUCCESSFUL);
+        Cursor cur = downloadManager.query(query);
+        if (cur != null) {
+            if (cur.moveToFirst()) {
+                String uriString = cur.getString(cur.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI));
+                if (!TextUtils.isEmpty(uriString)) {
+                    String path = Uri.parse(uriString).getPath();
+                    return path;
+                }
+            }
+            cur.close();
+        }
+        return null;
     }
 
     void loadApkVersion() {
@@ -170,9 +204,5 @@ public class UpdateManager {
 
     class ApkVersion {
         float version;
-    }
-
-    public interface ShowDialogListeners{
-        void show(Uri uri);
     }
 }
