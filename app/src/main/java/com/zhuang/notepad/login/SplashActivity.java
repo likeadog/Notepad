@@ -2,10 +2,7 @@ package com.zhuang.notepad.login;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.SharedPreferences;
-import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
@@ -17,8 +14,6 @@ import com.zhuang.notepad.network.BaseReturnMsg;
 import com.zhuang.notepad.network.LoginService;
 import com.zhuang.notepad.network.RetrofitHelper;
 import com.zhuang.notepad.notepad.NotepadListActivity;
-import com.zhuang.notepad.update.UpdateLoadCompleteReceiver;
-import com.zhuang.notepad.update.UpdateManager;
 import com.zhuang.notepad.user.SingleUser;
 import com.zhuang.notepad.utils.SharedPreferencesUtil;
 
@@ -28,8 +23,6 @@ import retrofit2.Response;
 
 public class SplashActivity extends BaseActivity {
 
-    UpdateLoadCompleteReceiver receiver;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,27 +30,7 @@ public class SplashActivity extends BaseActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_splash);
-        //validateToken();
-        update();
-
-        receiver = new UpdateLoadCompleteReceiver();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction("DownloadManager.ACTION_DOWNLOAD_COMPLETE");
-        registerReceiver(receiver, filter);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        unregisterReceiver(receiver);
-    }
-
-    /**
-     * 检查更新
-     */
-    void update() {
-        UpdateManager updateManager = new UpdateManager(getApplicationContext());
-        updateManager.update();
+        validateToken();
     }
 
     /**

@@ -51,10 +51,10 @@ android {
     signingConfigs {
         release {
             try {
-                storeFile file("./keystore/release.keystore")
-                storePassword "testres"
-                keyAlias "testres"
-                keyPassword "testres"
+                storeFile file("./keystore/release.jks")
+                storePassword "zhuang"
+                keyAlias "key1"
+                keyPassword "zhuang"
             } catch (ex) {
                 throw new InvalidUserDataException(ex.toString())
             }
@@ -82,6 +82,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }

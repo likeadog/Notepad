@@ -1,12 +1,15 @@
 package com.zhuang.notepad.notepad;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,6 +22,7 @@ import com.zhuang.notepad.login.LoginActivity;
 import com.zhuang.notepad.network.BaseReturnMsg;
 import com.zhuang.notepad.network.LoginService;
 import com.zhuang.notepad.network.RetrofitHelper;
+import com.zhuang.notepad.update.UpdateManager;
 import com.zhuang.notepad.user.GalleryActivity;
 import com.zhuang.notepad.user.UpdatePasswordActivity;
 import com.zhuang.notepad.user.UserActivity;
@@ -47,6 +51,8 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
         NavHeaderNoteListBinding.bind(binding.navView.getHeaderView(0));
         viewModel = new NotepadListViewModel(this);
         binding.setViewModel(viewModel);
+
+        update();
     }
 
     public void drawClick(View view){
@@ -131,5 +137,13 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * 检查更新
+     */
+    void update() {
+        UpdateManager updateManager = new UpdateManager(this);
+        updateManager.update();
     }
 }
