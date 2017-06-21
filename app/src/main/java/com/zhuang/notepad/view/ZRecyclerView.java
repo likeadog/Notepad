@@ -5,6 +5,7 @@ import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -29,6 +30,7 @@ public class ZRecyclerView extends RecyclerView {
     private int diverType = 1;
 
     private OnItemClickListener onItemClickListener;
+    private OnLongItemClickListener onLongItemClickListener;
     private OnLoadListener onLoadListener;
 
     public ZRecyclerView(Context context) {
@@ -76,7 +78,7 @@ public class ZRecyclerView extends RecyclerView {
         mDataObserver = new DataObserver();
         super.setAdapter(mWrapAdapter);
         adapter.registerAdapterDataObserver(mDataObserver);
-        mDataObserver.onChanged();
+        //mDataObserver.onChanged();
     }
 
     private class WrapAdapter extends Adapter<ViewHolder> {
@@ -129,6 +131,15 @@ public class ZRecyclerView extends RecyclerView {
                     @Override
                     public void onClick(View v) {
                         onItemClickListener.onItemClick(fPosition);
+                    }
+                });
+            }
+            if(onLongItemClickListener != null){
+                holder.itemView.setOnLongClickListener(new OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        onLongItemClickListener.OnLongItemClick(fPosition);
+                        return true;
                     }
                 });
             }
@@ -207,6 +218,10 @@ public class ZRecyclerView extends RecyclerView {
         void onLoad();
     }
 
+    public interface OnLongItemClickListener{
+        void OnLongItemClick(int position);
+    }
+
     public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
@@ -215,4 +230,7 @@ public class ZRecyclerView extends RecyclerView {
         this.onLoadListener = onLoadListener;
     }
 
+    public void setOnLongItemClickListener(OnLongItemClickListener onLongItemClickListener) {
+        this.onLongItemClickListener = onLongItemClickListener;
+    }
 }

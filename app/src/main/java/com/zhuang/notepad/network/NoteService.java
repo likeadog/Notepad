@@ -17,4 +17,7 @@ public interface NoteService {
 
     @GET("ser/addnote")
     Call<BaseReturnMsg> addNote(@Query("note") String note);
+
+    @GET("ser/deletenote")
+    Call<BaseReturnMsg> deleteNote(@Query("ids") String ids);
 }

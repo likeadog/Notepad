@@ -72,7 +72,8 @@
                     bind:adapter="@{viewModel.adapter}"
                     bind:hasDiver="false"
                     bind:layoutManager="LinearLayoutManager"
-                    bind:onItemClickListener="@{viewModel.itemClickListener}" />
+                    bind:onItemClickListener="@{viewModel.itemClickListener}"
+                    bind:onLongItemClickListener="@{viewModel.longItemClickListener}"/>
             </android.support.v4.widget.SwipeRefreshLayout>
 
             <android.support.design.widget.FloatingActionButton
