@@ -74,6 +74,9 @@ public class UpdateManager {
         long downloadId = SharedPreferencesUtil.getDownloadId(applicationContext);
         if (downloadId != -1) {
             PackageInfo loadInfo = getApkInfo(downloadId);
+            if(loadInfo == null){
+                return;
+            }
             String localPackage = applicationContext.getPackageName();
             if (loadInfo.packageName.equals(localPackage)) {
                 int loadVersion = loadInfo.versionCode;
@@ -154,6 +157,9 @@ public class UpdateManager {
      */
     private PackageInfo getApkInfo(long downloadId) {
         String path = getApkPath(downloadId);
+        if(path == null){
+            return null;
+        }
         PackageManager pm = applicationContext.getPackageManager();
         PackageInfo info = pm.getPackageArchiveInfo(path, PackageManager.GET_ACTIVITIES);
         return info;

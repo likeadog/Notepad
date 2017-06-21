@@ -14,20 +14,22 @@
         android:orientation="vertical"
         tools:context="com.zhuang.notepad.user.UserActivity">
 
+        <include layout="@layout/toolbar"/>
+
         <RelativeLayout
-            android:paddingRight="16dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:background="@android:color/white"
-            android:onClick="showCheckPictureDialog">
+            android:onClick="showCheckPictureDialog"
+            android:paddingRight="16dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:text="头像"
                 android:padding="16dp"
+                android:text="头像"
                 android:textColor="@android:color/black"
                 android:textSize="16sp" />
 
@@ -76,21 +78,21 @@
                 android:textSize="16sp" />
 
             <TextView
-                android:layout_toLeftOf="@+id/go1"
                 android:id="@+id/name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_toLeftOf="@+id/go1"
                 android:text="@{SingleUser.instance.name}" />
 
             <ImageView
-                android:visibility="invisible"
                 android:id="@+id/go1"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="5dp"
-                android:src="@drawable/ic_go" />
+                android:src="@drawable/ic_go"
+                android:visibility="invisible" />
         </RelativeLayout>
 
         <View

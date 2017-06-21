@@ -37,6 +37,7 @@ public class UserActivity extends BaseActivity {
     private static final int REQUEST_PERMISSION = 12;//权限请求
     private static final int REQUEST_PREVIEW = 13;//照片预览
     private String mCurrentPhotoPath;//存放照片地址
+    private int photoCheckWhich;//当前选择的是拍照还是相册  0：拍照  1：相册
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,11 +56,8 @@ public class UserActivity extends BaseActivity {
             builder.setItems(new String[]{"拍照", "相册"}, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    if (which == 0) {
-                        requestPermission();
-                    } else {
-                        getImageFromCamera();
-                    }
+                    photoCheckWhich = which;
+                    requestPermission();
                 }
             }).setNegativeButton("取消", null);
             alertDialog = builder.create();
@@ -77,7 +75,11 @@ public class UserActivity extends BaseActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_PERMISSION);
         } else {
-            dispatchTakePictureIntent();
+            if(photoCheckWhich == 0){
+                dispatchTakePictureIntent();
+            }else{
+                getImageFromCamera();
+            }
         }
     }
 
@@ -85,8 +87,12 @@ public class UserActivity extends BaseActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                //申请成功，可以拍照
-                dispatchTakePictureIntent();
+                //申请成功
+                if(photoCheckWhich == 0){
+                    dispatchTakePictureIntent();
+                }else{
+                    getImageFromCamera();
+                }
             } else {
                 Toast.makeText(this, "没有权限", Toast.LENGTH_SHORT).show();
             }
