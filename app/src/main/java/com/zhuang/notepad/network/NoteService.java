@@ -20,4 +20,7 @@ public interface NoteService {
 
     @GET("ser/deletenote")
     Call<BaseReturnMsg> deleteNote(@Query("ids") String ids);
+
+    @GET("ser/notecontent")
+    Call<BaseReturnMsg> updateNote(@Query("content") String content,@Query("id") long id);
 }

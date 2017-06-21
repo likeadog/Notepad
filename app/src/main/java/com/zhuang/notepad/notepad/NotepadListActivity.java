@@ -134,6 +134,10 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_ADD_NOTE) {
                 viewModel.refresh();
+            }else if(requestCode == NotepadListViewModel.UPDATE){
+                String content = data.getStringExtra("content");
+                int position = data.getIntExtra("position",0);
+                viewModel.updateNote(position,content);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

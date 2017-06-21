@@ -24,6 +24,10 @@ public class Note {
         return note;
     }
 
+    public void setNote(String note) {
+        this.note = note;
+    }
+
     public String getTime() {
         return time;
     }

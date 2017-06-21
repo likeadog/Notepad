@@ -56,10 +56,10 @@ public class UpdateManager {
      *
      * @param remoteVersion
      */
-    void compareCurrentVersion(float remoteVersion) {
+    void compareCurrentVersion(int remoteVersion) {
         try {
-            String versionName = applicationContext.getPackageManager().getPackageInfo(applicationContext.getPackageName(), 0).versionName;
-            if (Float.parseFloat(versionName) < remoteVersion) {
+            int versionCode = applicationContext.getPackageManager().getPackageInfo(applicationContext.getPackageName(), 0).versionCode;
+            if (versionCode < remoteVersion) {
                 compareLoadVersion(remoteVersion);
             }
         } catch (PackageManager.NameNotFoundException e) {
@@ -70,13 +70,13 @@ public class UpdateManager {
     /**
      * 已下载的apk版本与与远程的apk版本比较
      */
-    void compareLoadVersion(float remoteVersion) {
+    void compareLoadVersion(int remoteVersion) {
         long downloadId = SharedPreferencesUtil.getDownloadId(applicationContext);
         if (downloadId != -1) {
             PackageInfo loadInfo = getApkInfo(downloadId);
             String localPackage = applicationContext.getPackageName();
             if (loadInfo.packageName.equals(localPackage)) {
-                float loadVersion = Float.parseFloat(loadInfo.versionName);
+                int loadVersion = loadInfo.versionCode;
                 if (loadVersion == remoteVersion) {
                     //不需要下载，直接安装
                     Log.e("zhuang", "已下载过更新的apk,版本为"+loadVersion+"直接安装");
@@ -187,7 +187,7 @@ public class UpdateManager {
             @Override
             public void onResponse(Call<ApkVersion> call, Response<ApkVersion> response) {
                 ApkVersion apkVersion = response.body();
-                compareCurrentVersion(apkVersion.version);
+                compareCurrentVersion(apkVersion.versionCode);
             }
 
             @Override
@@ -203,6 +203,7 @@ public class UpdateManager {
     }
 
     class ApkVersion {
-        float version;
+        String versionName;
+        int versionCode;
     }
 }

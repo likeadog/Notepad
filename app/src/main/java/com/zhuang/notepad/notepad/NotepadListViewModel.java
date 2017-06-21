@@ -1,5 +1,6 @@
 package com.zhuang.notepad.notepad;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -33,10 +34,11 @@ public class NotepadListViewModel extends BaseObservable {
     public NoteListAdapter adapter;
     private List<Note> noteList = new ArrayList<>();
     private String TAG = getClass().getSimpleName();
-    private Context context;
+    private Activity context;
     public boolean refreshing = true;
+    public final static int UPDATE = 12;
 
-    public NotepadListViewModel(Context context) {
+    public NotepadListViewModel(Activity context) {
         this.context = context;
         adapter = new NoteListAdapter(noteList);
         getNoteList();
@@ -136,9 +138,17 @@ public class NotepadListViewModel extends BaseObservable {
             Intent intent = new Intent(context, NotepadDetailActivity.class);
             intent.putExtra("note", note.getNote());
             intent.putExtra("time", note.getTime());
-            context.startActivity(intent);
+            intent.putExtra("noteId", note.getId());
+            intent.putExtra("position",position);
+            context.startActivityForResult(intent,UPDATE);
         }
     };
+
+    public void updateNote(int position,String content){
+        Note note = noteList.get(position);
+        note.setNote(content);
+        adapter.notifyDataSetChanged();
+    }
 
     @Bindable
     public boolean getRefreshing() {
