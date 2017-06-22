@@ -110,7 +110,7 @@ public class UserActivity extends BaseActivity {
             try {
                 File file = PictureUtil.createImageFile();
                 Uri photoURI;
-                if (Build.VERSION.SDK_INT > 23) {
+                if (Build.VERSION.SDK_INT >= 24) {
                     photoURI = FileProvider.getUriForFile(this,
                             BuildConfig.APPLICATION_ID + ".provider",
                             file);

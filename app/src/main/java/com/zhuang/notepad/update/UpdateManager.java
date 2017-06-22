@@ -123,8 +123,8 @@ public class UpdateManager {
         intent.setAction(Intent.ACTION_VIEW);
         //此处因为上下文是Context，所以要加此Flag，不然会报错
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
             contentUri = FileProvider.getUriForFile(context,
                     BuildConfig.APPLICATION_ID + ".provider",
                     apkFile);
