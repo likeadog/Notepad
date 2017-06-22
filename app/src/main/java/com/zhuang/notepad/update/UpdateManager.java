@@ -61,6 +61,8 @@ public class UpdateManager {
             int versionCode = applicationContext.getPackageManager().getPackageInfo(applicationContext.getPackageName(), 0).versionCode;
             if (versionCode < remoteVersion) {
                 compareLoadVersion(remoteVersion);
+            }else{
+                Log.e("zhuang","不需要更新");
             }
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
@@ -75,6 +77,7 @@ public class UpdateManager {
         if (downloadId != -1) {
             PackageInfo loadInfo = getApkInfo(downloadId);
             if(loadInfo == null){
+                Log.e("zhuang","未下载完成");
                 return;
             }
             String localPackage = applicationContext.getPackageName();
