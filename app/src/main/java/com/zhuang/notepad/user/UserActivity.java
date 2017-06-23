@@ -75,9 +75,9 @@ public class UserActivity extends BaseActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     REQUEST_PERMISSION);
         } else {
-            if(photoCheckWhich == 0){
+            if (photoCheckWhich == 0) {
                 dispatchTakePictureIntent();
-            }else{
+            } else {
                 getImageFromCamera();
             }
         }
@@ -88,13 +88,24 @@ public class UserActivity extends BaseActivity {
         if (requestCode == REQUEST_PERMISSION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 //申请成功
-                if(photoCheckWhich == 0){
+                if (photoCheckWhich == 0) {
                     dispatchTakePictureIntent();
-                }else{
+                } else {
                     getImageFromCamera();
                 }
             } else {
-                Toast.makeText(this, "没有权限", Toast.LENGTH_SHORT).show();
+                //权限被拒绝
+                AlertDialog.Builder builder = new AlertDialog.Builder(UserActivity.this);
+                builder.setMessage("没有权限").setPositiveButton("去设置", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent localIntent = new Intent();
+                        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+                        localIntent.setData(Uri.fromParts("package", getPackageName(), null));
+                        startActivity(localIntent);
+                    }
+                }).create().show();
             }
             return;
         }
