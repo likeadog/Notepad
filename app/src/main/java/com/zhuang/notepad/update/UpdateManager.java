@@ -56,11 +56,11 @@ public class UpdateManager {
      *
      * @param remoteVersion
      */
-    void compareCurrentVersion(int remoteVersion) {
+    void compareCurrentVersion(int remoteVersion,String log) {
         try {
             int versionCode = applicationContext.getPackageManager().getPackageInfo(applicationContext.getPackageName(), 0).versionCode;
             if (versionCode < remoteVersion) {
-                compareLoadVersion(remoteVersion);
+                compareLoadVersion(remoteVersion,log);
             }else{
                 Log.e("zhuang","不需要更新");
             }
@@ -72,7 +72,7 @@ public class UpdateManager {
     /**
      * 已下载的apk版本与与远程的apk版本比较
      */
-    void compareLoadVersion(int remoteVersion) {
+    void compareLoadVersion(int remoteVersion,String log) {
         long downloadId = SharedPreferencesUtil.getDownloadId(applicationContext);
         if (downloadId != -1) {
             PackageInfo loadInfo = getApkInfo(downloadId);
@@ -86,7 +86,7 @@ public class UpdateManager {
                 if (loadVersion == remoteVersion) {
                     //不需要下载，直接安装
                     Log.e("zhuang", "已下载过更新的apk,版本为"+loadVersion+"直接安装");
-                    showDialog(downloadId);
+                    showDialog(downloadId,log);
                 } else if (loadVersion < remoteVersion) {
                     //需要下载
                     Log.e("zhuang", "下载过的apk版本较老,已下载版本为"+loadVersion+"服务器版本为"+remoteVersion+"需要下载");
@@ -99,9 +99,9 @@ public class UpdateManager {
         }
     }
 
-    private void showDialog(final long downloadId){
+    private void showDialog(final long downloadId,final String log){
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(" ").setMessage("app有更新，是否更新？")
+        builder.setTitle("更新").setMessage(log)
                 .setNegativeButton("取消",null)
                 .setPositiveButton("更新", new DialogInterface.OnClickListener() {
                     @Override
@@ -196,7 +196,7 @@ public class UpdateManager {
             @Override
             public void onResponse(Call<ApkVersion> call, Response<ApkVersion> response) {
                 ApkVersion apkVersion = response.body();
-                compareCurrentVersion(apkVersion.versionCode);
+                compareCurrentVersion(apkVersion.versionCode,apkVersion.log);
             }
 
             @Override
@@ -214,5 +214,6 @@ public class UpdateManager {
     class ApkVersion {
         String versionName;
         int versionCode;
+        String log;//更新日志
     }
 }
