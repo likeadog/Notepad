@@ -17,44 +17,26 @@
         android:fitsSystemWindows="true"
         tools:openDrawer="start">
 
-        <RelativeLayout
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
-            <RelativeLayout
-                android:id="@+id/toolbar"
-                android:orientation="horizontal"
+            <android.support.design.widget.AppBarLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <ImageView
-                    android:onClick="drawClick"
-                    android:layout_width="?attr/actionBarSize"
+                android:layout_height="wrap_content"
+                android:theme="@style/AppTheme.NoActionBar.AppBarOverlay">
+
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
+                    android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:paddingRight="10dp"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:src="@drawable/ic_menu" />
-                <TextView
-                    android:id="@+id/title"
-                    android:layout_centerInParent="true"
-                    android:textSize="28dp"
-                    android:padding="10dp"
-                    android:textColor="@android:color/black"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Notepad"/>
-                <ImageView
-                    android:layout_alignParentRight="true"
-                    android:onClick="gotoGallery"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:paddingRight="10dp"
-                    android:paddingTop="16dp"
-                    android:paddingBottom="16dp"
-                    android:src="@drawable/ic_gallary" />
-            </RelativeLayout>
+                    android:background="?attr/colorPrimary"
+                    app:popupTheme="@style/AppTheme.NoActionBar.PopupOverlay" />
+
+            </android.support.design.widget.AppBarLayout>
 
             <android.support.v4.widget.SwipeRefreshLayout xmlns:bind="http://schemas.android.com/apk/res-auto"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:id="@+id/swipeRefreshLayout"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -63,27 +45,28 @@
                 bind:refreshing="@{viewModel.refreshing}">
 
                 <com.zhuang.notepad.view.ZRecyclerView
+                    android:paddingTop="10dp"
+                    android:clipToPadding="false"
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     bind:adapter="@{viewModel.adapter}"
-                    bind:hasDiver="true"
                     bind:diverType="interval"
+                    bind:hasDiver="true"
                     bind:layoutManager="LinearLayoutManager"
                     bind:onItemClickListener="@{viewModel.itemClickListener}"
-                    bind:onLongItemClickListener="@{viewModel.longItemClickListener}"/>
+                    bind:onLongItemClickListener="@{viewModel.longItemClickListener}" />
             </android.support.v4.widget.SwipeRefreshLayout>
 
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:onClick="gotoAddNote"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                app:srcCompat="@drawable/ic_edit" />
-        </RelativeLayout>
+                android:layout_gravity="bottom|end"
+                android:layout_margin="@dimen/fab_margin"
+                app:srcCompat="@android:drawable/ic_menu_edit" />
+
+        </android.support.design.widget.CoordinatorLayout>
 
         <android.support.design.widget.NavigationView
             android:id="@+id/nav_view"

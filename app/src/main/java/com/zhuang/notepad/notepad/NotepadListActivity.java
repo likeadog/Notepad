@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.MenuItem;
@@ -42,10 +43,10 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_list);
 
-       /* ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
-                this, binding.drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         binding.drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();*/
+        toggle.syncState();
 
         binding.navView.setNavigationItemSelectedListener(this);
         NavHeaderNoteListBinding.bind(binding.navView.getHeaderView(0));
@@ -53,10 +54,6 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
         binding.setViewModel(viewModel);
 
         update();
-    }
-
-    public void drawClick(View view){
-        binding.drawerLayout.openDrawer(GravityCompat.START);
     }
 
     /**
