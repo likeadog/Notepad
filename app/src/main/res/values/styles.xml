@@ -6,6 +6,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@color/defaultBackground</item>
+        <item name="actionBarSize">45dp</item>
     </style>
 
     <style name="AppTheme.NoActionBar" parent="AppTheme">

@@ -24,8 +24,10 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme.NoActionBar">
-        <activity android:name=".login.SplashActivity">
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".login.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -35,15 +37,34 @@
         <activity
             android:name=".login.LoginActivity"
             android:theme="@style/LoginTheme" />
-        <activity android:name=".login.RegisteredActivity" />
+        <activity
+            android:name=".login.RegisteredActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".notepad.NotepadListActivity"
-            android:label="@string/title_activity_notepad_list" />
-        <activity android:name=".notepad.AddNoteActivity" />
-        <activity android:name=".user.UserActivity" />
-        <activity android:name=".user.AvatarPreviewActivity" />
-        <activity android:name=".user.UpdatePasswordActivity" />
-        <activity android:name=".notepad.NotepadDetailActivity" />
+            android:label="@string/title_activity_notepad_list"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".notepad.AddNoteActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.UserActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.AvatarPreviewActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.UpdatePasswordActivity"
+            android:label="修改密码" />
+        <activity
+            android:name=".notepad.NotepadDetailActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.GalleryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".user.PhotoCheckActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -58,9 +79,6 @@
         <service
             android:name=".update.TinkerResultService"
             android:exported="false" />
-
-        <activity android:name=".user.GalleryActivity" />
-        <activity android:name=".user.PhotoCheckActivity" />
 
         <service
             android:name="com.xiaomi.push.service.XMPushService"
