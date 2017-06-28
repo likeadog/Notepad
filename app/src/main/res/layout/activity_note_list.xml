@@ -19,8 +19,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/white">
+            android:layout_height="wrap_content">
 
             <RelativeLayout
                 android:id="@+id/toolbar"
@@ -64,13 +63,12 @@
                 bind:refreshing="@{viewModel.refreshing}">
 
                 <com.zhuang.notepad.view.ZRecyclerView
-                    android:paddingTop="10dp"
                     android:id="@+id/recyclerView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:clipToPadding="false"
                     bind:adapter="@{viewModel.adapter}"
-                    bind:hasDiver="false"
+                    bind:hasDiver="true"
+                    bind:diverType="interval"
                     bind:layoutManager="LinearLayoutManager"
                     bind:onItemClickListener="@{viewModel.itemClickListener}"
                     bind:onLongItemClickListener="@{viewModel.longItemClickListener}"/>

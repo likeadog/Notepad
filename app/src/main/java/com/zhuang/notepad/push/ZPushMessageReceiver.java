@@ -18,7 +18,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 1、ZPushMessageReceiver 是个抽象类，该类继承了 BroadcastReceiver。<br/>
+ * 1、PushMessageReceiver 是个抽象类，该类继承了 BroadcastReceiver。<br/>
  * 2、需要将自定义的 DemoMessageReceiver 注册在 AndroidManifest.xml 文件中：
  * <pre>
  * {@code

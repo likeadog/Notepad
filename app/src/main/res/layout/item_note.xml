@@ -8,50 +8,37 @@
             type="com.zhuang.notepad.model.Note" />
     </data>
 
-    <com.zhuang.notepad.view.BorderView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:layout_marginLeft="8dp"
-        android:layout_marginRight="8dp"
-        android:background="@{note.colorInt4}"
-        app:borderColor="@{note.colorInt3}"
-        app:borderWidth="1dp">
+        android:background="@android:color/white"
+        android:padding="10dp">
 
-        <RelativeLayout
+        <TextView
+            android:textColor="@android:color/black"
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{note.title[0]}"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/subTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/content"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/title"
+            android:text="@{note.title[1]}" />
+
+        <TextView
+            android:id="@+id/content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{note.title[0]}"
-                android:textColor="@{note.colorInt1}"
-                android:textSize="18sp" />
-
-            <TextView
-                android:layout_marginLeft="10dp"
-                android:id="@+id/subTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/content"
-                android:layout_toRightOf="@+id/title"
-                android:text="@{note.title[1]}"
-                android:textColor="@{note.colorInt2}"/>
-
-            <TextView
-                android:layout_marginTop="10dp"
-                android:id="@+id/content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/title"
-                android:lineSpacingMultiplier="1.2"
-                android:text="@{note.note}"
-                android:textColor="@{note.colorInt2}"
-                android:textSize="16sp" />
-        </RelativeLayout>
-    </com.zhuang.notepad.view.BorderView>
+            android:layout_below="@+id/title"
+            android:layout_marginTop="10dp"
+            android:lineSpacingMultiplier="1.2"
+            android:text="@{note.note}"
+            android:textSize="16sp" />
+    </RelativeLayout>
 </layout>

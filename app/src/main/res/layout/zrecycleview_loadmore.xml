@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:padding="20dp"
     android:layout_width="match_parent"
-    android:gravity="center"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:gravity="center">
 
     <android.support.v4.widget.ContentLoadingProgressBar
-        android:layout_toRightOf="@+id/textView"
+        android:id="@+id/progressBar"
         style="?android:attr/progressBarStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/progressBar" />
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_toRightOf="@+id/textView" />
 
     <TextView
-        android:text="推荐中"
-        android:layout_marginRight="5dp"
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/textView" />
+        android:layout_marginRight="5dp"
+        android:text="推荐中" />
 </RelativeLayout>

@@ -56,17 +56,8 @@ public class NotepadListViewModel extends BaseObservable {
                 ReturnDataList<Note> list = response.body();
                 //成功
                 if (list.getCode() == 0) {
-                    List<Note> noteList1 = list.getData();
-
-                    String[] colors = {"16a085","27ae60","2980b9","8e44ad","2c3e50",
-                            "f39c12","d35400","c0392b"};
-                    Random rand =new Random(48);
-                    for (int i = 0; i < noteList1.size(); i++) {
-                        Note note = noteList1.get(i);
-                        note.setColor(colors[rand.nextInt(7)]);
-                    }
                     noteList.clear();
-                    noteList.addAll(noteList1);
+                    noteList.addAll(list.getData());
                     adapter.notifyDataSetChanged();
                     setRefreshing(false);
                 }

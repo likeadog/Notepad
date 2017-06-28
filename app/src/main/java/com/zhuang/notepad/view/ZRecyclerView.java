@@ -6,10 +6,13 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.zhuang.notepad.R;
+
+import static com.zhuang.notepad.update.TinkerApplicationContext.context;
 
 /**
  * Created by zhuang on 2016/9/14.
@@ -21,8 +24,7 @@ public class ZRecyclerView extends RecyclerView {
     private static final int TYPE_HEADER = 1001;
     private static final int Line = 0;//线条
     private static final int Interval = 1;//间隔
-    private boolean loadComplete;
-    private View mFootView;
+    private boolean loadComplete = true;//是否加载完
     private View mHeaderView;
     private WrapAdapter mWrapAdapter;
     private DataObserver mDataObserver;
@@ -60,8 +62,6 @@ public class ZRecyclerView extends RecyclerView {
             }
         }
         a.recycle();
-
-        mFootView = View.inflate(getContext(), R.layout.zrecycleview_loadmore, null);
     }
 
     public void addHeaderView(View view) {
@@ -70,7 +70,6 @@ public class ZRecyclerView extends RecyclerView {
 
     public void loadComplete() {
         this.loadComplete = true;
-        mFootView.setVisibility(View.GONE);
     }
 
     public void setAdapter(Adapter adapter) {
@@ -84,10 +83,6 @@ public class ZRecyclerView extends RecyclerView {
     private class WrapAdapter extends Adapter<ViewHolder> {
 
         private Adapter adapter;
-
-        private boolean isFooter(int position) {
-            return position == getItemCount() - 1;
-        }
 
         public WrapAdapter(Adapter adapter) {
             this.adapter = adapter;
@@ -108,7 +103,9 @@ public class ZRecyclerView extends RecyclerView {
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
             if (viewType == TYPE_LOAD_MORE) {
-                return new FootViewHolder(mFootView);
+                View footView = LayoutInflater.from(parent.getContext()).inflate(R.layout.zrecycleview_loadmore, parent,
+                        false);
+                return new FootViewHolder(footView);
             } else if (viewType == TYPE_HEADER) {
                 return new HeaderViewHolder(mHeaderView);
             }
@@ -119,7 +116,6 @@ public class ZRecyclerView extends RecyclerView {
         public void onBindViewHolder(ViewHolder holder, int position) {
             if (getItemViewType(position) == TYPE_HEADER) return;
             if (getItemViewType(position) == TYPE_LOAD_MORE) {
-                mFootView.setVisibility(View.GONE);
                 return;
             }
             adapter.onBindViewHolder(holder, hasHeader() ? position - 1 : position);
@@ -134,7 +130,7 @@ public class ZRecyclerView extends RecyclerView {
                     }
                 });
             }
-            if(onLongItemClickListener != null){
+            if (onLongItemClickListener != null) {
                 holder.itemView.setOnLongClickListener(new OnLongClickListener() {
                     @Override
                     public boolean onLongClick(View v) {
@@ -164,7 +160,19 @@ public class ZRecyclerView extends RecyclerView {
         public int getItemCount() {
             if (adapter.getItemCount() == 0 && hasHeader()) return 1;
             if (adapter.getItemCount() == 0) return 0;
-            return hasHeader() ? adapter.getItemCount() + 2 : adapter.getItemCount() + 1;//: adapter.getItemCount();
+            //数据全部加载完时，不再显示加载更多
+            if (!loadComplete) {
+                return hasHeader() ? adapter.getItemCount() + 2 : adapter.getItemCount() + 1;
+            } else {
+                return hasHeader() ? adapter.getItemCount() + 1 : adapter.getItemCount();
+            }
+        }
+
+        private boolean isFooter(int position) {
+            if (!loadComplete) {
+                return position == getItemCount() - 1;
+            }
+            return false;
         }
 
         private boolean hasHeader() {
@@ -218,7 +226,7 @@ public class ZRecyclerView extends RecyclerView {
         void onLoad();
     }
 
-    public interface OnLongItemClickListener{
+    public interface OnLongItemClickListener {
         void OnLongItemClick(int position);
     }
 
@@ -227,6 +235,7 @@ public class ZRecyclerView extends RecyclerView {
     }
 
     public void setOnLoadListener(OnLoadListener onLoadListener) {
+        loadComplete = false;
         this.onLoadListener = onLoadListener;
     }
 
