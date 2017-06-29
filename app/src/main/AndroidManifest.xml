@@ -42,7 +42,7 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".notepad.NotepadListActivity"
-            android:label="@string/title_activity_notepad_list"
+            android:label="记事本"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".notepad.AddNoteActivity"

@@ -12,6 +12,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
@@ -43,6 +44,7 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
         super.onCreate(savedInstanceState);
         binding = DataBindingUtil.setContentView(this, R.layout.activity_note_list);
 
+        setSupportActionBar(binding.toolbar);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, binding.drawerLayout, binding.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         binding.drawerLayout.addDrawerListener(toggle);
@@ -97,7 +99,7 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
         call.enqueue(new Callback<BaseReturnMsg>() {
             @Override
             public void onResponse(Call<BaseReturnMsg> call, Response<BaseReturnMsg> response) {
-                Log.e(TAG,"退出登陆");
+                Log.e(TAG, "退出登陆");
                 SharedPreferences sp = getSharedPreferences("notepad", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sp.edit();
                 editor.remove("token");
@@ -127,14 +129,21 @@ public class NotepadListActivity extends BaseActivity implements NavigationView.
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        //加载 布局实现
+        getMenuInflater().inflate(R.menu.acivity_notepad_list, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_ADD_NOTE) {
                 viewModel.refresh();
-            }else if(requestCode == NotepadListViewModel.UPDATE){
+            } else if (requestCode == NotepadListViewModel.UPDATE) {
                 String content = data.getStringExtra("content");
-                int position = data.getIntExtra("position",0);
-                viewModel.updateNote(position,content);
+                int position = data.getIntExtra("position", 0);
+                viewModel.updateNote(position, content);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
